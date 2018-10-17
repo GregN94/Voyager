@@ -1,9 +1,16 @@
 import price_gen
-
-price_gen.set_configuration(3, 25, 30)
-matrix = price_gen.generate_prices()
-
-print(matrix)
-print(price_gen.load_from_file())
+import population as pop
 
 
+file_exist = False
+
+if not file_exist:
+    price_gen.set_configuration(3, 10, 50)
+    pop.set_configuration(3, 10)
+    matrix = price_gen.generate_prices_file()
+
+price_matrix = price_gen.load_from_file()
+print(price_matrix)
+
+population = pop.create_population()
+print(population)
