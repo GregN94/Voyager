@@ -35,3 +35,14 @@ def load_from_file():
     matrix = np.loadtxt(FILE_NAME)
     matrix = matrix.astype(np.int8)
     return matrix
+
+
+def symmetric_matrix(size):
+    [x, y] = np.triu_indices(size, k=1)
+    matrix = np.zeros([size, size])
+    matrix = matrix.astype(int)
+
+    rand_matrix = 10 + 40 * np.random.rand(6)
+    matrix[x, y] = rand_matrix
+    matrix[y, x] = rand_matrix
+    return matrix
