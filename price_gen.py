@@ -16,8 +16,10 @@ def set_configuration(num_of_cities, min_price, max_price):
 def generate_prices():
     delta = MAX_PRICE - MIN_PRICE
     matrix = MIN_PRICE + delta * np.random.rand(NUM_OF_CITIES, NUM_OF_CITIES) # TODO fix it so those are symmetrix matrixes
+    # matrix = np.zeros([NUM_OF_CITIES, NUM_OF_CITIES])
     np.fill_diagonal(matrix, 0)
     matrix = matrix.astype(np.int8)
+
     return matrix
 
 
