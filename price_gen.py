@@ -13,21 +13,19 @@ def set_configuration(num_of_cities, min_price, max_price):
     MAX_PRICE = max_price
 
 
-def generate_prices():
+def generate_prices(size):
+    [x, y] = np.triu_indices(size, k=1)
+    matrix = np.zeros([size, size]).astype(int)
     delta = MAX_PRICE - MIN_PRICE
-    matrix = MIN_PRICE + delta * np.random.rand(NUM_OF_CITIES, NUM_OF_CITIES) # TODO fix it so those are symmetrix matrixes
-    # matrix = np.zeros([NUM_OF_CITIES, NUM_OF_CITIES])
-    np.fill_diagonal(matrix, 0)
-    matrix = matrix.astype(np.int8)
-
+    num_of_elements = ((size - 1) * size) / 2
+    rand_matrix = MIN_PRICE + delta * np.random.rand(int(num_of_elements))
+    matrix[x, y] = rand_matrix
+    matrix[y, x] = rand_matrix
     return matrix
 
 
 def generate_prices_file():
-    delta = MAX_PRICE - MIN_PRICE
-    matrix = MIN_PRICE + delta * np.random.rand(NUM_OF_CITIES, NUM_OF_CITIES) # TODO fix it so those are symmetrix matrixes
-    np.fill_diagonal(matrix, 0)
-    matrix = matrix.astype(np.int8)
+    matrix = generate_prices(NUM_OF_CITIES)
     np.savetxt(FILE_NAME, matrix)
 
 
@@ -37,12 +35,3 @@ def load_from_file():
     return matrix
 
 
-def symmetric_matrix(size):
-    [x, y] = np.triu_indices(size, k=1)
-    matrix = np.zeros([size, size])
-    matrix = matrix.astype(int)
-
-    rand_matrix = 10 + 40 * np.random.rand(6)
-    matrix[x, y] = rand_matrix
-    matrix[y, x] = rand_matrix
-    return matrix
