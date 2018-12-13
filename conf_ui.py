@@ -24,7 +24,7 @@ import conf_ui_support
 
 import logging
 
-logging.basicConfig()
+logging.basicConfig(level=logging.DEBUG)
 
 
 MIXING_TYPES = [1, 2, 3, 4]
@@ -33,16 +33,16 @@ MUTATION_PERCENTAGE = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
 def vp_start_gui():
     """Starting point when module is the main routine."""
-    global top, root
-    root = tk.Tk()
+    global top, app
+    app = tk.Tk()
     conf_ui_support.set_Tk_var()
-    top = Window(root)
+    top = Window(app)
     top.old_matrix_checkbox.select()
     top.select_old()
     top.dynamic_stop_checkbox.select()
     top.select_dynamic()
-    conf_ui_support.init(root, top)
-    root.mainloop()
+    conf_ui_support.init(app, top)
+    app.mainloop()
 
 
 top = None
@@ -268,6 +268,7 @@ class Window:
         self.run_generic_btn.configure(activebackground="#f9f9f9")
         self.run_generic_btn.configure(background="#8dd868")
         self.run_generic_btn.configure(text='''Run''')
+        self.run_generic_btn.configure(command=self.run_generic_algorithm)
 
     def select_old(self):
         self.engine.create_new_prices = False
@@ -293,7 +294,17 @@ class Window:
         self.generations_to_end_entry.config(state="disabled")
         self.generations_range_entry.config(state="normal")
 
+    def check_entry(self, entry):
+        entry.configure(background="white")
+        if entry.get() == "" or int(entry.get()) <= 1:
+            entry.configure(background="#FF9999")
+            return False
+        return True
+
     def generate_price_matrix(self):
+        self.check_entry(self.num_of_cities_entry)
+        self.check_entry(self.min_price_entry)
+        self.check_entry(self.max_price_entry)
         try:
             self.engine.num_of_cities = int(self.num_of_cities_entry.get())
             self.engine.min_price = int(self.min_price_entry.get())
@@ -310,6 +321,10 @@ class Window:
             correct_matrix = self.generate_price_matrix()
         if correct_matrix:
             self.engine.main()
+
+    def run_generic_algorithm(self):
+        logging.info("Generic algorithm")
+        print(self.mutation_percentage_box.get())
 
 
 if __name__ == '__main__':
