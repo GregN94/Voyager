@@ -33,7 +33,7 @@ class Engine:
         pop.set_configuration(self.num_of_cities, POPULATION_SIZE)
 
     def main(self):
-        self.load_old_prices()
+        self.load_prices()
 
         population = pop.create_population()
 
@@ -42,7 +42,7 @@ class Engine:
         if self.find_exact_solution:
             self.calculate_exact_solution()
 
-    def load_old_prices(self):
+    def load_prices(self):
         self.price_matrix = price_gen.load_from_file()
 
     def generate_new_prices(self):
