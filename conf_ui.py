@@ -7,6 +7,7 @@
 
 import sys
 from main import *
+from tkinter import messagebox
 
 try:
     import Tkinter as tk
@@ -189,7 +190,6 @@ class Window:
 
         self.mixing_type_box = ttk.Combobox(top, values=MIXING_TYPES)
         self.mixing_type_box.place(relx=0.694, rely=0.57, relheight=0.031, relwidth=0.137)
-        # self.mixing_type_box.configure(textvariable=conf_ui_support.combobox)
         self.mixing_type_box.configure(background="#000000")
         self.mixing_type_box.configure(takefocus="")
 
@@ -200,7 +200,6 @@ class Window:
 
         self.mutation_percentage_box = ttk.Combobox(top, values=MUTATION_PERCENTAGE)
         self.mutation_percentage_box.place(relx=0.286, rely=0.614, relheight=0.031, relwidth=0.137)
-        # self.mutation_percentage_box.configure(textvariable=conf_ui_support.combobox)
         self.mutation_percentage_box.configure(takefocus="")
 
         self.Label10 = tk.Label(top)
@@ -298,13 +297,16 @@ class Window:
         entry.configure(background="white")
         if entry.get() == "" or int(entry.get()) <= 1:
             entry.configure(background="#FF9999")
+            messagebox.showerror("Title", "a Tk MessageBox")
             return False
         return True
 
-    def generate_price_matrix(self):
+    def check_matrix_configuration(self):
         self.check_entry(self.num_of_cities_entry)
         self.check_entry(self.min_price_entry)
         self.check_entry(self.max_price_entry)
+
+    def generate_price_matrix(self):
         try:
             self.engine.num_of_cities = int(self.num_of_cities_entry.get())
             self.engine.min_price = int(self.min_price_entry.get())
@@ -316,6 +318,7 @@ class Window:
             return False
 
     def run_simple_solution(self):
+        self.check_matrix_configuration()
         correct_matrix = True
         if self.engine.create_new_prices:
             correct_matrix = self.generate_price_matrix()
