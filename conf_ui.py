@@ -293,37 +293,43 @@ class Window:
         self.generations_to_end_entry.config(state="disabled")
         self.generations_range_entry.config(state="normal")
 
-    def check_entry(self, entry):
+    def check_entry(self, entry, value, string):
         entry.configure(background="white")
-        if entry.get() == "" or int(entry.get()) <= 1:
+        if entry.get() == "" or int(entry.get()) <= value:
             entry.configure(background="#FF9999")
-            messagebox.showerror("Title", "a Tk MessageBox")
+            messagebox.showerror("Incorrect value", "{0} should be bigger than {1}".format(string, value))
             return False
         return True
 
     def check_matrix_configuration(self):
-        self.check_entry(self.num_of_cities_entry)
-        self.check_entry(self.min_price_entry)
-        self.check_entry(self.max_price_entry)
+        is_config_correct = self.check_entry(self.num_of_cities_entry, 2, "Number of cities")
+        is_config_correct = self.check_entry(self.min_price_entry, 1, "Min price") and is_config_correct
+        max_check_value = 2
+        if self.min_price_entry.get() != '':
+            max_check_value = int(self.min_price_entry.get())
+        is_config_correct = self.check_entry(self.max_price_entry, max_check_value, "Max price") and is_config_correct
+        return is_config_correct
 
     def generate_price_matrix(self):
-        try:
-            self.engine.num_of_cities = int(self.num_of_cities_entry.get())
-            self.engine.min_price = int(self.min_price_entry.get())
-            self.engine.max_price = int(self.max_price_entry.get())
-            self.engine.generate_new_prices()
-            return True
-        except:
-            logging.warning("Invalid values")
-            return False
+        self.engine.num_of_cities = int(self.num_of_cities_entry.get())
+        self.engine.min_price = int(self.min_price_entry.get())
+        self.engine.max_price = int(self.max_price_entry.get())
+        self.engine.generate_new_prices()
 
     def run_simple_solution(self):
-        self.check_matrix_configuration()
-        correct_matrix = True
         if self.engine.create_new_prices:
-            correct_matrix = self.generate_price_matrix()
-        if correct_matrix:
-            self.engine.main()
+            if self.check_matrix_configuration():
+                self.generate_price_matrix()
+                self.engine.run_exact_solution()
+                messagebox.showinfo("Simple solution",
+                                    "Running simple solution, it might take a while")
+        else:
+            if not self.engine.load_prices():
+                messagebox.showinfo("Default configuration",
+                                    "There was no previous configuration, running with default configuration")
+            self.engine.run_exact_solution()
+            messagebox.showinfo("Simple solution",
+                                "Running simple solution, it might take a while")
 
     def run_generic_algorithm(self):
         logging.info("Generic algorithm")

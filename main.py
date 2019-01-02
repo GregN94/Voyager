@@ -14,36 +14,31 @@ POPULATION_SIZE = 4
 class Engine:
     def __init__(self):
         self.create_new_prices = True
-        self.find_exact_solution = True
         self.price_matrix = []
         self.num_of_cities = NUM_OF_CITIES
         self.min_price = MIN_PRICE
         self.max_price = MAX_PRICE
 
-    def calculate_exact_solution(self):
-        start = timer()
-        [value, comb] = exact_solution.calculate(self.price_matrix)
-        print("The cheapest route is: {0}\nwith cost of {1} $".format(comb, value))
-        end = timer()
-
-        print("Spend time: {0} s".format(end - start))
-
     def set_configuration(self):
         price_gen.set_configuration(self.num_of_cities, self.min_price, self.max_price)
         pop.set_configuration(self.num_of_cities, POPULATION_SIZE)
 
-    def main(self):
-        self.load_prices()
-
-        population = pop.create_population()
-
+    def run_exact_solution(self):
         print("Price matrix:\n {0}".format(self.price_matrix))
-
-        if self.find_exact_solution:
-            self.calculate_exact_solution()
+        start = timer()
+        [value, comb] = exact_solution.calculate(self.price_matrix)
+        print("The cheapest route is: {0}\nwith cost of {1} $".format(comb, value))
+        end = timer()
+        print("Spend time: {0} s".format(end - start))
 
     def load_prices(self):
-        self.price_matrix = price_gen.load_from_file()
+        if price_gen.check_if_price_file_exist():
+            self.price_matrix = price_gen.load_from_file()
+            file_exist = True
+        else:
+            self.price_matrix = price_gen.generate_prices_file()
+            file_exist = False
+        return file_exist
 
     def generate_new_prices(self):
         if self.create_new_prices:
