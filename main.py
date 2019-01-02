@@ -13,7 +13,6 @@ POPULATION_SIZE = 4
 
 class Engine:
     def __init__(self):
-        self.create_new_prices = True
         self.price_matrix = []
         self.num_of_cities = NUM_OF_CITIES
         self.min_price = MIN_PRICE
@@ -41,9 +40,8 @@ class Engine:
         return file_exist
 
     def generate_new_prices(self):
-        if self.create_new_prices:
-            self.set_configuration()
-            price_gen.generate_prices_file()
-            self.price_matrix = price_gen.load_from_file()
+        self.set_configuration()
+        price_gen.generate_prices_file()
+        self.price_matrix = price_gen.load_from_file()
 
 

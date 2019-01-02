@@ -22,14 +22,11 @@ except ImportError:
     py3 = True
 
 import conf_ui_support
-
+from price_conf_window import *
+from generic_conf_window import *
 import logging
 
 logging.basicConfig(level=logging.DEBUG)
-
-
-MIXING_TYPES = [1, 2, 3, 4]
-MUTATION_PERCENTAGE = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
 
 def vp_start_gui():
@@ -38,10 +35,10 @@ def vp_start_gui():
     app = tk.Tk()
     conf_ui_support.set_Tk_var()
     top = Window(app)
-    top.old_matrix_checkbox.select()
-    top.select_old()
-    top.dynamic_stop_checkbox.select()
-    top.select_dynamic()
+    top.price_conf_win.old_matrix_checkbox.select()
+    top.price_conf_win.select_old()
+    top.generic_conf_win.dynamic_stop_checkbox.select()
+    top.generic_conf_win.select_dynamic()
     conf_ui_support.init(app, top)
     app.mainloop()
 
@@ -55,7 +52,7 @@ def create_window(root, *args, **kwargs):
     rt = root
     top = tk.Toplevel(root)
     conf_ui_support.set_Tk_var()
-    window = Window (top)
+    window = Window(top)
     conf_ui_support.init(top, window, *args, **kwargs)
     return top, window
 
@@ -75,11 +72,7 @@ class Window:
         _fgcolor = '#000000'  # X11 color: 'black'
         _compcolor = '#d9d9d9' # X11 color: 'gray85'
         _ana1color = '#d9d9d9' # X11 color: 'gray85' 
-        _ana2color = '#ececec' # Closest X11 color: 'gray92' 
-        font10 = "-family {DejaVu Sans} -size 13 -weight normal -slant"  \
-            " roman -underline 0 -overstrike 0"
-        font9 = "-family {DejaVu Sans} -size 12 -weight normal -slant "  \
-            "roman -underline 0 -overstrike 0"
+        _ana2color = '#ececec' # Closest X11 color: 'gray92'
         self.style = ttk.Style()
         if sys.platform == "win32":
             self.style.theme_use('winnative')
@@ -93,72 +86,12 @@ class Window:
         top.configure(cursor="arrow")
         top.configure(highlightcolor="black")
 
-        self.price_conf_lbl = tk.Label(top)
-        self.price_conf_lbl.place(relx=0.224, rely=0.029, height=20, width=262)
-        self.price_conf_lbl.configure(activebackground="#f9f9f9")
-        self.price_conf_lbl.configure(font=font10)
-        self.price_conf_lbl.configure(text='''Price matrix configuration''')
-        self.price_conf_lbl.configure(width=262)
-
-        self.old_matrix_checkbox = tk.Checkbutton(top)
-        self.old_matrix_checkbox.place(relx=0.041, rely=0.088, relheight=0.034, relwidth=0.41)
-        self.old_matrix_checkbox.configure(activebackground="#f9f9f9")
-        self.old_matrix_checkbox.configure(justify='left')
-        self.old_matrix_checkbox.configure(text='''Load previous price matrix''')
-        self.old_matrix_checkbox.configure(command=self.select_old)
-
-        self.new_matrix_checkbox = tk.Checkbutton(top)
-        self.new_matrix_checkbox.place(relx=0.531, rely=0.088, relheight=0.034, relwidth=0.376)
-        self.new_matrix_checkbox.configure(activebackground="#f9f9f9")
-        self.new_matrix_checkbox.configure(justify='left')
-        self.new_matrix_checkbox.configure(text='''Create new price matrix''')
-        self.new_matrix_checkbox.configure(command=self.select_new)
-
-        self.num_of_cities_entry = tk.Entry(top)
-        self.num_of_cities_entry.place(relx=0.755, rely=0.146, height=23, relwidth=0.196)
-        self.num_of_cities_entry.configure(background="white")
-        self.num_of_cities_entry.configure(font="TkFixedFont")
-        self.num_of_cities_entry.configure(selectbackground="#c4c4c4")
-        self.num_of_cities_entry.setvar(value=self.engine.num_of_cities)
-
-        self.num_of_cities_lbl = tk.Label(top)
-        self.num_of_cities_lbl.place(relx=0.551, rely=0.146, height=21, width=91)
-
-        self.num_of_cities_lbl.configure(activebackground="#f9f9f9")
-        self.num_of_cities_lbl.configure(text='''Num of cities''')
-
-        self.min_price_entry = tk.Entry(top)
-        self.min_price_entry.place(relx=0.755, rely=0.19, height=23, relwidth=0.196)
-        self.min_price_entry.configure(background="white")
-        self.min_price_entry.configure(font="TkFixedFont")
-        self.min_price_entry.configure(selectbackground="#c4c4c4")
-
-        self.max_price_entry = tk.Entry(top)
-        self.max_price_entry.place(relx=0.755, rely=0.234, height=23, relwidth=0.196)
-        self.max_price_entry.configure(background="white")
-        self.max_price_entry.configure(font="TkFixedFont")
-        self.max_price_entry.configure(selectbackground="#c4c4c4")
-
-        self.min_price_lbl = tk.Label(top)
-        self.min_price_lbl.place(relx=0.551, rely=0.19, height=21, width=64)
-        self.min_price_lbl.configure(activebackground="#f9f9f9")
-        self.min_price_lbl.configure(text='''Min price''')
-
-        self.max_price_lbl = tk.Label(top)
-        self.max_price_lbl.place(relx=0.551, rely=0.234, height=21, width=68)
-        self.max_price_lbl.configure(activebackground="#f9f9f9")
-        self.max_price_lbl.configure(text='''Max price''')
+        self.price_conf_win = PriceConfigWindow(top)
+        self.generic_conf_win = GenericConfigWindow(top)
 
         self.TSeparator1 = ttk.Separator(top)
         self.TSeparator1.place(relx=0.49, rely=0.088, relheight=0.263)
         self.TSeparator1.configure(orient="vertical")
-
-        self.gen_alg_conf_lbl = tk.Label(top)
-        self.gen_alg_conf_lbl.place(relx=0.163, rely=0.512, height=26, width=287)
-
-        self.gen_alg_conf_lbl.configure(activebackground="#f9f9f9")
-        self.gen_alg_conf_lbl.configure(font=font10)
-        self.gen_alg_conf_lbl.configure(text='''Generic Algorithm configuration''')
 
         self.run_simple_solution_btn = tk.Button(top)
         self.run_simple_solution_btn.place(relx=0.735, rely=0.395, height=31, width=53)
@@ -170,82 +103,10 @@ class Window:
         self.simple_solution_lbl = tk.Label(top)
         self.simple_solution_lbl.place(relx=0.122, rely=0.395, height=31, width=295)
         self.simple_solution_lbl.configure(activebackground="#f9f9f9")
-        self.simple_solution_lbl.configure(text='''Run simple solution, not generic algorithms''')
-
-        self.population_size_lbl = tk.Label(top)
-        self.population_size_lbl.place(relx=0.041, rely=0.57, height=21, width=103)
-        self.population_size_lbl.configure(activebackground="#f9f9f9")
-        self.population_size_lbl.configure(text='''Population size''')
-
-        self.mixing_type_lbl = tk.Label(top)
-        self.mixing_type_lbl.place(relx=0.49, rely=0.57, height=21, width=100)
-        self.mixing_type_lbl.configure(activebackground="#f9f9f9")
-        self.mixing_type_lbl.configure(text='''Mixing type''')
-
-        self.population_size_entry = tk.Entry(top)
-        self.population_size_entry.place(relx=0.286, rely=0.57, height=23, relwidth=0.135)
-        self.population_size_entry.configure(background="white")
-        self.population_size_entry.configure(font="TkFixedFont")
-        self.population_size_entry.configure(selectbackground="#c4c4c4")
-
-        self.mixing_type_box = ttk.Combobox(top, values=MIXING_TYPES)
-        self.mixing_type_box.place(relx=0.694, rely=0.57, relheight=0.031, relwidth=0.137)
-        self.mixing_type_box.configure(background="#000000")
-        self.mixing_type_box.configure(takefocus="")
-
-        self.mutation_percentage_lbl = tk.Label(top)
-        self.mutation_percentage_lbl.place(relx=0.041, rely=0.614, height=21, width=79)
-        self.mutation_percentage_lbl.configure(activebackground="#f9f9f9")
-        self.mutation_percentage_lbl.configure(text='''Mutation %''')
-
-        self.mutation_percentage_box = ttk.Combobox(top, values=MUTATION_PERCENTAGE)
-        self.mutation_percentage_box.place(relx=0.286, rely=0.614, relheight=0.031, relwidth=0.137)
-        self.mutation_percentage_box.configure(takefocus="")
-
-        self.Label10 = tk.Label(top)
-        self.Label10.place(relx=0.347, rely=0.702, height=23, width=118)
-        self.Label10.configure(activebackground="#f9f9f9")
-        self.Label10.configure(font=font9)
-        self.Label10.configure(text='''Stop condition''')
-
-        self.static_stop_checkbox = tk.Checkbutton(top)
-        self.static_stop_checkbox.place(relx=0.204, rely=0.746, relheight=0.034, relwidth=0.131)
-        self.static_stop_checkbox.configure(activebackground="#f9f9f9")
-        self.static_stop_checkbox.configure(justify='left')
-        self.static_stop_checkbox.configure(text='''Static''')
-        self.static_stop_checkbox.configure(command=self.select_static)
-
-        self.dynamic_stop_checkbox = tk.Checkbutton(top)
-        self.dynamic_stop_checkbox.place(relx=0.531, rely=0.746, relheight=0.034, relwidth=0.173)
-        self.dynamic_stop_checkbox.configure(activebackground="#f9f9f9")
-        self.dynamic_stop_checkbox.configure(justify='left')
-        self.dynamic_stop_checkbox.configure(text='''Dynamic''')
-        self.dynamic_stop_checkbox.configure(command=self.select_dynamic)
+        self.simple_solution_lbl.configure(text="Run simple solution, not generic algorithms")
 
         self.menu_bar = tk.Menu(top, font="TkMenuFont", bg=_bgcolor, fg=_fgcolor)
         top.configure(menu=self.menu_bar)
-
-        self.generations_to_end_lbl = tk.Label(top)
-        self.generations_to_end_lbl.place(relx=0.082, rely=0.789, height=21, width=128)
-        self.generations_to_end_lbl.configure(activebackground="#f9f9f9")
-        self.generations_to_end_lbl.configure(text='''Generations to end''')
-
-        self.generations_to_end_entry = tk.Entry(top)
-        self.generations_to_end_entry.place(relx=0.082, rely=0.833, height=23, relwidth=0.176)
-        self.generations_to_end_entry.configure(background="white")
-        self.generations_to_end_entry.configure(font="TkFixedFont")
-        self.generations_to_end_entry.configure(selectbackground="#c4c4c4")
-
-        self.generations_range_lbl = tk.Label(top)
-        self.generations_range_lbl.place(relx=0.551, rely=0.789, height=21, width=124)
-        self.generations_range_lbl.configure(activebackground="#f9f9f9")
-        self.generations_range_lbl.configure(text='''Generations range''')
-
-        self.generations_range_entry = tk.Entry(top)
-        self.generations_range_entry.place(relx=0.551, rely=0.833, height=23, relwidth=0.196)
-        self.generations_range_entry.configure(background="white")
-        self.generations_range_entry.configure(font="TkFixedFont")
-        self.generations_range_entry.configure(selectbackground="#c4c4c4")
 
         self.TSeparator2 = ttk.Separator(top)
         self.TSeparator2.place(relx=0.469, rely=0.76, relheight=0.132)
@@ -260,65 +121,24 @@ class Window:
         self.run_generic_lbl = tk.Label(top)
         self.run_generic_lbl.place(relx=0.122, rely=0.936, height=21, width=156)
         self.run_generic_lbl.configure(activebackground="#f9f9f9")
-        self.run_generic_lbl.configure(text='''Run generaic algorithm''')
+        self.run_generic_lbl.configure(text="Run generic algorithm")
 
         self.run_generic_btn = tk.Button(top)
         self.run_generic_btn.place(relx=0.49, rely=0.921, height=41, width=83)
         self.run_generic_btn.configure(activebackground="#f9f9f9")
         self.run_generic_btn.configure(background="#8dd868")
-        self.run_generic_btn.configure(text='''Run''')
+        self.run_generic_btn.configure(text="Run")
         self.run_generic_btn.configure(command=self.run_generic_algorithm)
 
-    def select_old(self):
-        self.engine.create_new_prices = False
-        self.new_matrix_checkbox.deselect()
-        self.num_of_cities_entry.config(state="disabled")
-        self.min_price_entry.config(state="disabled")
-        self.max_price_entry.config(state="disabled")
-
-    def select_new(self):
-        self.engine.create_new_prices = True
-        self.old_matrix_checkbox.deselect()
-        self.num_of_cities_entry.config(state="normal")
-        self.min_price_entry.config(state="normal")
-        self.max_price_entry.config(state="normal")
-
-    def select_static(self):
-        self.dynamic_stop_checkbox.deselect()
-        self.generations_range_entry.config(state="disabled")
-        self.generations_to_end_entry.config(state="normal")
-
-    def select_dynamic(self):
-        self.static_stop_checkbox.deselect()
-        self.generations_to_end_entry.config(state="disabled")
-        self.generations_range_entry.config(state="normal")
-
-    def check_entry(self, entry, value, string):
-        entry.configure(background="white")
-        if entry.get() == "" or int(entry.get()) <= value:
-            entry.configure(background="#FF9999")
-            messagebox.showerror("Incorrect value", "{0} should be bigger than {1}".format(string, value))
-            return False
-        return True
-
-    def check_matrix_configuration(self):
-        is_config_correct = self.check_entry(self.num_of_cities_entry, 2, "Number of cities")
-        is_config_correct = self.check_entry(self.min_price_entry, 1, "Min price") and is_config_correct
-        max_check_value = 2
-        if self.min_price_entry.get() != '':
-            max_check_value = int(self.min_price_entry.get())
-        is_config_correct = self.check_entry(self.max_price_entry, max_check_value, "Max price") and is_config_correct
-        return is_config_correct
-
     def generate_price_matrix(self):
-        self.engine.num_of_cities = int(self.num_of_cities_entry.get())
-        self.engine.min_price = int(self.min_price_entry.get())
-        self.engine.max_price = int(self.max_price_entry.get())
+        self.engine.num_of_cities = int(self.price_conf_win.num_of_cities_entry.get())
+        self.engine.min_price = int(self.price_conf_win.min_price_entry.get())
+        self.engine.max_price = int(self.price_conf_win.max_price_entry.get())
         self.engine.generate_new_prices()
 
     def run_simple_solution(self):
-        if self.engine.create_new_prices:
-            if self.check_matrix_configuration():
+        if self.price_conf_win.create_new_prices:
+            if self.price_conf_win.check_matrix_configuration():
                 self.generate_price_matrix()
                 self.engine.run_exact_solution()
                 messagebox.showinfo("Simple solution",
@@ -333,7 +153,7 @@ class Window:
 
     def run_generic_algorithm(self):
         logging.info("Generic algorithm")
-        print(self.mutation_percentage_box.get())
+        print(self.generic_conf_win.mutation_percentage_box.get())
 
 
 if __name__ == '__main__':
