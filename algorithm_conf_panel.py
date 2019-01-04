@@ -104,19 +104,25 @@ class AlgorithmConfigPanel:
         self.stop_condition = Stop.DYNAMIC
 
     def get_population(self):
-        return self.population_size_entry.get()
+        return int(self.population_size_entry.get())
 
     def get_mutation(self):
-        return self.mutation_percentage_box.get()
+        return int(self.mutation_percentage_box.get())
 
     def get_mixing(self):
-        return self.mixing_type_box.get()
+        return int(self.mixing_type_box.get())
 
     def get_generation_range(self):
-        return self.generations_range_entry.get()
+        gen_range = self.generations_range_entry.get()
+        if gen_range == "":
+            return 0
+        return int(gen_range)
 
     def get_generation_end(self):
-        return self.generations_to_end_entry.get()
+        gen_end = self.generations_to_end_entry.get()
+        if gen_end == "":
+            return 0
+        return int(gen_end)
 
     def select_static(self):
         self.stop_condition = Stop.STATIC

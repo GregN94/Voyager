@@ -70,7 +70,11 @@ class Engine:
     def generic_algorithm(self):
         if not self.load_prices_file():
             self.default_prices()
-        print("Generic algorithm")
+        print("Price matrix:\n {0}".format(self.price_matrix))
+        pop.set_configuration(self.num_of_cities, self.population_size)
+        population = pop.create_population()
+        print(population)
+        pop.create_sequence(population)
 
     def set_algorithm_settings(self, population, mixing, mutation, stop, gen_range=GENERATIONS_RANGE, gen_end=GENERATIONS_TO_END):
         self.population_size = population
