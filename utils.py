@@ -9,7 +9,7 @@ class Stop(Enum):
 
 def check_entry(entry, value, string):
     entry.configure(background="white")
-    if entry.get() == "" or int(entry.get()) <= value:
+    if not entry.get() or int(entry.get()) <= value:
         entry.configure(background="#FF9999")
         messagebox.showerror("Incorrect value", "{0} should be bigger than {1}".format(string, value))
         return False
@@ -19,9 +19,9 @@ def check_entry(entry, value, string):
 def check_checkbox(checkbox, values, string):
     checkbox.configure(background="white")
     is_correct = False
-    if checkbox.get() != "":
+    if checkbox.get():
         for value in values:
-            if int(checkbox.get()) == value:
+            if int(checkbox.get()) is value:
                 is_correct = True
     if not is_correct:
         checkbox.configure(background="#FF9999")
@@ -30,7 +30,7 @@ def check_checkbox(checkbox, values, string):
 
 
 def int_from_entry(entry, default_value):
-    if entry.get() != '':
+    if entry.get():
         default_value = int(entry.get())
     return default_value
 

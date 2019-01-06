@@ -3,9 +3,9 @@ import itertools
 
 
 # functions definitions
-def calculate_sum(comb, matrix, matrix_size):
+def calculate_sum(comb, matrix):
     sum = 0
-    for i in range(matrix_size):
+    for i in range(len(matrix)):
         if i == 0:
             continue
         sum += matrix[comb[i - 1], comb[i]]
@@ -18,7 +18,7 @@ def calculate(matrix):
     min_comb = 0
     combinations = itertools.permutations(range(size), size)
     for comb in combinations:
-        ret = calculate_sum(comb, matrix, size)
+        ret = calculate_sum(comb, matrix)
         if ret < min_val:
             min_val = ret
             min_comb = comb

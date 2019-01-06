@@ -114,13 +114,13 @@ class AlgorithmConfigPanel:
 
     def get_generation_range(self):
         gen_range = self.generations_range_entry.get()
-        if gen_range == "":
+        if not gen_range:
             return 0
         return int(gen_range)
 
     def get_generation_end(self):
         gen_end = self.generations_to_end_entry.get()
-        if gen_end == "":
+        if not gen_end:
             return 0
         return int(gen_end)
 

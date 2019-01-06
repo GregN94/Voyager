@@ -81,7 +81,8 @@ class Engine:
         self.mixing_type = mixing
         self.mutation_percentage = mutation
         self.stop_condition = stop
-        if self.stop_condition == Stop.DYNAMIC:
+        if self.stop_condition is Stop.DYNAMIC:
+            print("hello")
             self.generations_range = gen_range
         else:
             self.generations_to_end = gen_end
