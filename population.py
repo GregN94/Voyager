@@ -12,23 +12,24 @@ def set_configuration(num_of_cities, population_size):
     POPULATION_SIZE = population_size
 
 
-def create_population():
+def create_population_matrix():
     population = NUM_OF_CITIES * np.random.rand(POPULATION_SIZE, NUM_OF_CITIES - 1)
     population = population.astype(np.uint8)
     return population
 
 
-def create_sequence(population):
-    sequence_matrix = []
-    for specimen in population:
+def create_population():
+    matrix = create_population_matrix()
+    sorted_matrix = []
+    for specimen in matrix:
         index = 0
         data_dict = defaultdict(list)
         for value in specimen:
             data_dict[value].append(index)
             index += 1
         data_dict = sorted(data_dict.items())
-        sequence_matrix.append(create_list_from_dict(data_dict))
-    return sequence_matrix
+        sorted_matrix.append(create_list_from_dict(data_dict))
+    return sorted_matrix
 
 
 def create_list_from_dict(data_dict):

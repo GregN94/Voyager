@@ -67,6 +67,17 @@ class Engine:
         self.set_configuration()
         price_gen.generate_prices_file()
 
+    def set_algorithm_settings(self, population, mixing, mutation, stop, gen_range=GENERATIONS_RANGE, gen_end=GENERATIONS_TO_END):
+        self.population_size = population
+        self.mixing_type = mixing
+        self.mutation_percentage = mutation
+        self.stop_condition = stop
+
+        if self.stop_condition is Stop.DYNAMIC:
+            self.generations_range = gen_range
+        else:
+            self.generations_to_end = gen_end
+
     def generic_algorithm(self):
         if not self.load_prices_file():
             self.default_prices()
@@ -74,17 +85,6 @@ class Engine:
         pop.set_configuration(self.num_of_cities, self.population_size)
         population = pop.create_population()
         print(population)
-        pop.create_sequence(population)
+        for i in population:
+            print(exact_solution.calculate_sum(i, self.price_matrix))
 
-    def set_algorithm_settings(self, population, mixing, mutation, stop, gen_range=GENERATIONS_RANGE, gen_end=GENERATIONS_TO_END):
-        self.population_size = population
-        self.mixing_type = mixing
-        self.mutation_percentage = mutation
-        self.stop_condition = stop
-        if self.stop_condition is Stop.DYNAMIC:
-            print("hello")
-            self.generations_range = gen_range
-        else:
-            self.generations_to_end = gen_end
-
-        print(self.population_size)
