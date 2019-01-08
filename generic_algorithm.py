@@ -38,14 +38,14 @@ def four_point_cross(first, second):
     return execute(first, second, cross)
 
 
-def cross_two_specimens(first, second, num_of_crosses):
+def cross_two_specimens(first, second, cross_type):
     switch = {
         1: one_point_cross,
         2: two_point_cross,
         3: three_point_cross,
         4: four_point_cross
     }
-    return switch[num_of_crosses](first, second)
+    return switch[cross_type](first, second)
 
 
 def cross_specimens(population):
@@ -54,8 +54,10 @@ def cross_specimens(population):
     length = int(len(possible_pos) / 2)
     new_population = []
     for i in range(length):
-        new_population.append(cross_two_specimens(population[possible_pos[2 * i]],
-                                                  population[possible_pos[2 * i + 1]], 1))
+        [new_1, new_2] = cross_two_specimens(population[possible_pos[2 * i]],
+                                             population[possible_pos[2 * i + 1]], 1)
+        new_population.append(new_1)
+        new_population.append(new_2)
 
-    for i in new_population:
-        print(i)
+    population.extend(new_population)
+    return population
