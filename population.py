@@ -13,7 +13,7 @@ def set_configuration(num_of_cities, population_size):
 
 
 def create_population_matrix():
-    population = NUM_OF_CITIES * np.random.rand(POPULATION_SIZE, NUM_OF_CITIES - 1)
+    population = NUM_OF_CITIES * np.random.rand(POPULATION_SIZE, NUM_OF_CITIES)
     population = population.astype(np.uint8)
     return population
 

@@ -4,6 +4,8 @@ import exact_solution
 from timeit import default_timer as timer
 from tkinter import messagebox
 from utils import Stop
+import generic_algorithm
+
 
 NUM_OF_CITIES = 5
 MIN_PRICE = 10
@@ -42,12 +44,15 @@ class Engine:
 
         messagebox.showinfo("Simple solution",
                             "Running exact solution, it might take a while")
-        print("Price matrix:\n {0}".format(self.price_matrix))
+        self.print_price_matrix()
         start = timer()
         [value, comb] = exact_solution.calculate(self.price_matrix)
         print("The cheapest route is: {0}\nwith cost of {1} $".format(comb, value))
         end = timer()
         print("Spend time: {0} s".format(end - start))
+
+    def print_price_matrix(self):
+        print("Price matrix:\n {0}".format(self.price_matrix))
 
     def default_prices(self):
         messagebox.showinfo("Default configuration",
@@ -59,6 +64,7 @@ class Engine:
 
         if price_gen.check_if_price_file_exist():
             self.price_matrix = price_gen.load_from_file()
+            self.num_of_cities = len(self.price_matrix)
             does_file_exist = True
 
         return does_file_exist
@@ -81,10 +87,11 @@ class Engine:
     def generic_algorithm(self):
         if not self.load_prices_file():
             self.default_prices()
-        print("Price matrix:\n {0}".format(self.price_matrix))
+        self.print_price_matrix()
         pop.set_configuration(self.num_of_cities, self.population_size)
         population = pop.create_population()
         print(population)
-        for i in population:
-            print(exact_solution.calculate_sum(i, self.price_matrix))
+        # for i in population:
+        #     print(exact_solution.calculate_sum(i, self.price_matrix))
 
+        generic_algorithm.cross_specimens(population)

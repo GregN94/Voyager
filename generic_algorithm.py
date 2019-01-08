@@ -2,52 +2,60 @@ import numpy as np
 
 
 def create_cross_points(max_value, num_of_points):
-    posiible_positions = np.arange(1, max_value)
-    np.random.shuffle(posiible_positions)
-    cross_position = sorted(posiible_positions[:num_of_points])
+    possible_positions = np.arange(1, max_value)
+    np.random.shuffle(possible_positions)
+    cross_position = sorted(possible_positions[:num_of_points])
     return cross_position
 
 
-def one_point_cross(first, second):
-    cross_pos = create_cross_points(len(first), 1)
-
-    new_1 = first[0: cross_pos[0]] + second[cross_pos[0]:]
-
-    new_2 = second[0: cross_pos[0]] + first[cross_pos[0]:]
+def execute(first, second, func):
+    new_1 = func(first, second)
+    new_2 = func(second, first)
     return new_1, new_2
+
+
+def one_point_cross(first, second):
+    pos = create_cross_points(len(first), 1)
+    cross = lambda x, y: x[0: pos[0]] + y[pos[0]:]
+    return execute(first, second, cross)
 
 
 def two_point_cross(first, second):
-    cross_pos = create_cross_points(len(first), 2)
-
-    new_1 = first[0: cross_pos[0]] + second[cross_pos[0]: cross_pos[1]] + first[cross_pos[1]:]
-
-    new_2 = second[0: cross_pos[0]] + first[cross_pos[0]: cross_pos[1]] + second[cross_pos[1]:]
-    return new_1, new_2
+    pos = create_cross_points(len(first), 2)
+    cross = lambda x, y: x[0: pos[0]] + y[pos[0]: pos[1]] + x[pos[1]:]
+    return execute(first, second, cross)
 
 
 def three_point_cross(first, second):
-    cross_pos = create_cross_points(len(first), 3)
-
-    new_1 = first[0: cross_pos[0]] + second[cross_pos[0]: cross_pos[1]] + first[cross_pos[1]: cross_pos[2]] + second[cross_pos[2]:]
-    new_2 = second[0: cross_pos[0]] + first[cross_pos[0]: cross_pos[1]] + second[cross_pos[1]: cross_pos[2]] + first[cross_pos[2]:]
-    return new_1, new_2
+    pos = create_cross_points(len(first), 3)
+    cross = lambda x, y: x[0: pos[0]] + y[pos[0]: pos[1]] + x[pos[1]: pos[2]] + y[pos[2]:]
+    return execute(first, second, cross)
 
 
 def four_point_cross(first, second):
-    cross_pos = create_cross_points(len(first), 4)
-
-    new_1 = first[0: cross_pos[0]] + second[cross_pos[0]: cross_pos[1]] + first[cross_pos[1]: cross_pos[2]] + second[cross_pos[2]:cross_pos[3]] + first[cross_pos[3]:]
-
-    new_2 = second[0: cross_pos[0]] + first[cross_pos[0]: cross_pos[1]] + second[cross_pos[1]: cross_pos[2]] + first[cross_pos[2]:cross_pos[3]] + second[cross_pos[3]:]
-    return new_1, new_2
+    pos = create_cross_points(len(first), 4)
+    cross = lambda x, y: x[0: pos[0]] + y[pos[0]: pos[1]] + x[pos[1]: pos[2]] + y[pos[2]:pos[3]] + x[pos[3]:]
+    return execute(first, second, cross)
 
 
-def cross_spieces(first, second, cross_section):
+def cross_two_specimens(first, second, num_of_crosses):
     switch = {
         1: one_point_cross,
         2: two_point_cross,
         3: three_point_cross,
         4: four_point_cross
     }
-    return switch[cross_section](first, second)
+    return switch[num_of_crosses](first, second)
+
+
+def cross_specimens(population):
+    possible_pos = np.arange(0, len(population))
+    np.random.shuffle(possible_pos)
+    length = int(len(possible_pos) / 2)
+    new_population = []
+    for i in range(length):
+        new_population.append(cross_two_specimens(population[possible_pos[2 * i]],
+                                                  population[possible_pos[2 * i + 1]], 1))
+
+    for i in new_population:
+        print(i)
