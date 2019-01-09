@@ -95,4 +95,4 @@ class Engine:
         #     print(exact_solution.calculate_sum(i, self.price_matrix))
 
         generic_algorithm.cross_specimens(population, self.mixing_type)
-        generic_algorithm.tournament_selection(population, self.price_matrix)
+        # generic_algorithm.tournament_selection(population, self.price_matrix)
