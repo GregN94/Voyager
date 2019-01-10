@@ -1,6 +1,7 @@
 import numpy as np
 from exact_solution import calculate_sum
 
+
 def create_cross_points(max_value, num_of_points):
     possible_positions = np.arange(1, max_value)
     np.random.shuffle(possible_positions)
@@ -49,6 +50,7 @@ def cross_two_specimens(first, second, cross_type):
 
 
 def cross_specimens(population, cross_type):
+    population = population.tolist()
     possible_pos = np.arange(0, len(population))
     np.random.shuffle(possible_pos)
     length = int(len(possible_pos) / 2)
@@ -65,10 +67,13 @@ def cross_specimens(population, cross_type):
 
 def tournament_selection(population, prices):
     print(population)
-    possible_pos = np.arange(0, len(population))
-    np.random.shuffle(possible_pos)
-    length = int(len(possible_pos) / 2)
+    seq = np.arange(0, len(population))
+    np.random.shuffle(seq)
+    length = int(len(seq) / 2)
     for i in range(length):
-        print("Pair: {0} {1}".format(population[possible_pos[2 * i]], population[possible_pos[2 * i + 1]]))
-        print(calculate_sum(population[possible_pos[2 * i]], prices))
-        print(calculate_sum(population[possible_pos[2 * i + 1]], prices))
+        print("Pair: {0} {1}".format(population[seq[2 * i]], population[seq[2 * i + 1]]))
+        lhs = calculate_sum(population[seq[2 * i]], prices)
+        rhs = calculate_sum(population[seq[2 * i + 1]], prices)
+        print(lhs)
+        print(rhs)
+        

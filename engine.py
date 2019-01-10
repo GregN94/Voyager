@@ -90,9 +90,9 @@ class Engine:
         self.print_price_matrix()
         pop.set_configuration(self.num_of_cities, self.population_size)
         population = pop.create_population()
-        print(population)
         # for i in population:
         #     print(exact_solution.calculate_sum(i, self.price_matrix))
 
-        generic_algorithm.cross_specimens(population, self.mixing_type)
-        # generic_algorithm.tournament_selection(population, self.price_matrix)
+        new_population = generic_algorithm.cross_specimens(population, self.mixing_type)
+
+        generic_algorithm.tournament_selection(new_population, self.price_matrix)
