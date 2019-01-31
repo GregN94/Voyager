@@ -92,14 +92,10 @@ class Engine:
         pop.set_configuration(self.num_of_cities, self.population_size)
         population = pop.create_population()
         population = population.tolist()
-        # for i in population:
-        #     print(exact_solution.calculate_sum(i, self.price_matrix))
 
         for i in range(1000):
-            # print("iteration: " + str(i))
-            # print()
-            # print("old population " + str(population))
             new_population = generic_algorithm.cross_specimens(population, self.mixing_type)
-            # print("new population " + str(new_population))
             population = generic_algorithm.tournament_selection(new_population, self.price_matrix)
-            # print(population)
+
+            if i < 500:
+                generic_algorithm.mutate_all_population(population, self.mutation_percentage)

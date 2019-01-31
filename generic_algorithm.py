@@ -1,6 +1,7 @@
 import numpy as np
 from exact_solution import calculate_sum
 from population import create_sequences_matrix
+from random import *
 
 INIT_MINIMAL_VALUE = 100000000000
 
@@ -118,3 +119,26 @@ def tournament_selection(population, prices):
 
 def reset():
     min_conf.reset()
+
+
+def mutate_all_population(population, percent):
+    # print(percent)
+    num_of_mutations = int(len(population) * percent / 100)
+    if num_of_mutations == 0:
+        num_of_mutations = 1
+    rand_pop_index = np.arange(0, len(population))
+    np.random.shuffle(rand_pop_index)
+    # print(population)
+    for i in range(num_of_mutations):
+        # print(rand_pop_index[i])
+        mutate(population[rand_pop_index[i]])
+    # cross_position = sorted(possible_positions[:num_of_points])
+    # return cross_position
+    # print(population)
+
+
+def mutate(speciman):
+    index = randint(0, len(speciman) - 1)
+    # print(index)
+    speciman[index] = randint(0, len(speciman) - 1)
+
