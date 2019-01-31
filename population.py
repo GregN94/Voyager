@@ -1,6 +1,5 @@
 import numpy as np
 from collections import defaultdict
-from exact_solution import calculate_sum
 
 NUM_OF_CITIES = 4
 POPULATION_SIZE = 4
