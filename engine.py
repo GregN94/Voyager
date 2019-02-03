@@ -4,7 +4,7 @@ import exact_solution
 from timeit import default_timer as timer
 from tkinter import messagebox
 from utils import Stop
-import generic_algorithm
+import genetic_algorithm as genetic
 
 
 NUM_OF_CITIES = 5
@@ -15,8 +15,8 @@ POPULATION_SIZE = 4
 MUTATION_PERCENTAGE = 5
 MIXING_TYPE = 2
 
-GENERATIONS_RANGE = 1000
-GENERATIONS_TO_END = 10000
+GEN_RANGE = 1000
+GEN_END = 10000
 
 
 class Engine:
@@ -31,8 +31,8 @@ class Engine:
         self.mixing_type = MIXING_TYPE
 
         self.stop_condition = Stop.DYNAMIC
-        self.generations_range = GENERATIONS_RANGE
-        self.generations_to_end = GENERATIONS_TO_END
+        self.generations_range = GEN_RANGE
+        self.generations_to_end = GEN_END
 
     def set_configuration(self):
         price_gen.set_configuration(self.num_of_cities, self.min_price, self.max_price)
@@ -52,7 +52,7 @@ class Engine:
         print("Spend time: {0} s".format(end - start))
 
     def print_price_matrix(self):
-        print("Price matrix:\n {0}".format(self.price_matrix))
+        print("\nPrice matrix:\n {0}\n".format(self.price_matrix))
 
     def default_prices(self):
         messagebox.showinfo("Default configuration",
@@ -73,7 +73,7 @@ class Engine:
         self.set_configuration()
         price_gen.generate_prices_file()
 
-    def set_algorithm_settings(self, population, mixing, mutation, stop, gen_range=GENERATIONS_RANGE, gen_end=GENERATIONS_TO_END):
+    def set_algorithm_settings(self, population, mixing, mutation, stop, gen_range=GEN_RANGE, gen_end=GEN_END):
         self.population_size = population
         self.mixing_type = mixing
         self.mutation_percentage = mutation
@@ -84,18 +84,48 @@ class Engine:
         else:
             self.generations_to_end = gen_end
 
-    def generic_algorithm(self):
-        generic_algorithm.reset()
+    def genetic_algorithm(self):
+        genetic.reset()
         if not self.load_prices_file():
             self.default_prices()
         self.print_price_matrix()
         pop.set_configuration(self.num_of_cities, self.population_size)
-        population = pop.create_population()
-        population = population.tolist()
+        population = pop.create_population().tolist()
 
-        for i in range(1000):
-            new_population = generic_algorithm.cross_specimens(population, self.mixing_type)
-            population = generic_algorithm.tournament_selection(new_population, self.price_matrix)
+        self.choose_algorithm(self.stop_condition, population)
 
-            if i < 500:
-                generic_algorithm.mutate_all_population(population, self.mutation_percentage)
+    def choose_algorithm(self, condition, population):
+        switch = {
+            Stop.DYNAMIC: self.dynamic_algorithm,
+            Stop.STATIC: self.static_algorithm,
+        }
+        return switch[condition](population)
+
+    def dynamic_algorithm(self, population):
+
+        stop = False
+        generation = 0
+        start = timer()
+        while not stop:
+            generation += 1
+
+            new_population = genetic.cross_specimens(population, self.mixing_type)
+            population = genetic.tournament_selection(new_population, self.price_matrix, generation)
+
+            if generation < 500:
+                population = genetic.mutate_population(population, self.mutation_percentage)
+            if genetic.stop_dynamic_condition(generation, self.generations_range):
+                end = timer()
+                print("Spend time: {0} s".format(end - start))
+                genetic.display_results(generation)
+                stop = True
+
+    def static_algorithm(self, population):
+        for gen in range(self.generations_to_end):
+
+            new_population = genetic.cross_specimens(population, self.mixing_type)
+            population = genetic.tournament_selection(new_population, self.price_matrix, gen)
+
+            if gen < 500:
+                population = genetic.mutate_population(population, self.mutation_percentage)
+        genetic.display_results(self.generations_to_end)

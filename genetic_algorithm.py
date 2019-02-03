@@ -23,8 +23,9 @@ class MinConfiguration:
         self.minimal_comb = []
         self.generation = 0
 
-    def print(self):
-        print("Min sum:" + str(self.minimal_sum) + " comb: " + str(self.minimal_comb))
+    def print(self, gen):
+        print("Gen: {0} Min cost: {1} in gen: {2} sequence: {3}"
+              .format(gen, self.minimal_sum, self.generation, self.minimal_comb))
 
 
 min_conf = MinConfiguration()
@@ -92,7 +93,7 @@ def cross_specimens(population, cross_type):
     return population
 
 
-def tournament_selection(population, prices):
+def tournament_selection(population, prices, generation):
     global min_conf
     new_population = []
     seq = np.arange(0, len(population))
@@ -106,39 +107,54 @@ def tournament_selection(population, prices):
         rhs_sum = calculate_sum(seq_pop[rhs_index], prices)
         if lhs_sum >= rhs_sum:
             new_population.append(population[rhs_index])
-            min_conf.change_min(rhs_sum, population[rhs_index], 0)
+            min_conf.change_min(rhs_sum, seq_pop[rhs_index], generation)
         elif lhs_sum < rhs_sum:
             new_population.append(population[lhs_index])
-            min_conf.change_min(lhs_sum, population[lhs_index], 0)
+            min_conf.change_min(lhs_sum, seq_pop[lhs_index], generation)
 
-    min_conf.print()
-    if len(population) % 2 is not 0:
-        new_population.append(population[seq[len(seq) - 1]])
+    if generation % 10 == 0 or generation == 1:
+        min_conf.print(generation)
+
+    if len(population) % 2 != 0:
+        new_population.append(population[seq[-1]])
     return new_population
+
+
+def display_results(gen):
+    min_conf.print(gen)
+
+
+def stop_dynamic_condition(gen, dynamic):
+    global min_conf
+    ret_value = False
+    if gen >= min_conf.generation + dynamic:
+        ret_value = True
+    return ret_value
 
 
 def reset():
     min_conf.reset()
 
 
-def mutate_all_population(population, percent):
-    # print(percent)
-    num_of_mutations = int(len(population) * percent / 100)
-    if num_of_mutations == 0:
-        num_of_mutations = 1
-    rand_pop_index = np.arange(0, len(population))
-    np.random.shuffle(rand_pop_index)
-    # print(population)
+def mutate_population(pop, percentage):
+    num_of_mutations = calc_mutations_num(pop, percentage)
+
+    mutations_index = np.arange(0, len(pop))
+    np.random.shuffle(mutations_index)
+
     for i in range(num_of_mutations):
-        # print(rand_pop_index[i])
-        mutate(population[rand_pop_index[i]])
-    # cross_position = sorted(possible_positions[:num_of_points])
-    # return cross_position
-    # print(population)
+        mutate(pop[mutations_index[i]])
+    return pop
 
 
-def mutate(speciman):
-    index = randint(0, len(speciman) - 1)
-    # print(index)
-    speciman[index] = randint(0, len(speciman) - 1)
+def calc_mutations_num(population, percent):
+    num_of_mutations = int(len(population) * percent / 100)
+    if not num_of_mutations:
+        num_of_mutations = 1
+    return num_of_mutations
+
+
+def mutate(one_object):
+    index = randint(0, len(one_object) - 1)
+    one_object[index] = randint(0, 255)
 

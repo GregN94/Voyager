@@ -27,7 +27,7 @@ class AlgorithmConfigPanel:
         self.gen_alg_conf_lbl.place(relx=0.163, rely=0.512, height=26, width=287)
         self.gen_alg_conf_lbl.configure(activebackground="#f9f9f9")
         self.gen_alg_conf_lbl.configure(font=font10)
-        self.gen_alg_conf_lbl.configure(text="Generic Algorithm configuration")
+        self.gen_alg_conf_lbl.configure(text="Genetic Algorithm configuration")
 
         self.population_size_lbl = tk.Label(top)
         self.population_size_lbl.place(relx=0.041, rely=0.57, height=21, width=103)

@@ -83,7 +83,7 @@ class Window:
         self.style.map('.',background=[('selected', _compcolor), ('active', _ana2color)])
 
         top.geometry("490x684+625+127")
-        top.title("Comi Voyager")
+        top.title("Komiwojadżer")
         top.configure(cursor="arrow")
         top.configure(highlightcolor="black")
 
@@ -110,7 +110,7 @@ class Window:
 
     def run_generic_algorithm(self):
         self.set_generic_algorithm_settings()
-        self.engine.generic_algorithm()
+        self.engine.genetic_algorithm()
 
     def set_generic_algorithm_settings(self):
         self.engine.set_algorithm_settings(self.generic_panel.get_population(),

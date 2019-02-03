@@ -1,8 +1,6 @@
-import numpy as np
 import itertools
 
 
-# functions definitions
 def calculate_sum(comb, matrix):
     sum = 0
     for i in range(len(matrix)):
